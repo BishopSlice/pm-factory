@@ -7,25 +7,37 @@ Work moves through six stages. Each stage asks one question, writes its answer d
 
 ```mermaid
 flowchart LR
-  F["Frame<br/>Is this worth doing?"] --> D["Discover<br/>What is true about users?"]
-  D --> S["Define<br/>What exactly are we building?"]
-  S --> G["Design<br/>What does it look like?"]
-  G --> B["Build<br/>Does it match the spec?"]
-  B --> L["Launch & Learn<br/>Did it move the metric?"]
-  L -.->|"iterate"| S
+  F["`**Frame**
+  Is this worth doing, and for whom?`"] --> D["`**Discover**
+  What is true about users and the market?`"]
+  D --> S["`**Define**
+  What exactly are we building?`"]
+  S --> G["`**Design**
+  What should it look and feel like?`"]
+  G --> B["`**Build**
+  Does it work, and does it match the spec?`"]
+  B --> L["`**Launch & Learn**
+  Did it move the metric?`"]
+  L -.->|"Iterate."| S
 ```
 
 Inside every stage, the same loop runs.
 
 ```mermaid
-flowchart TD
-  R["/factory reads STATE.md"] --> M["Offers a menu of the stage's skills"]
-  M --> P["The user picks one"]
-  P --> K["The skill runs and writes its artifact"]
-  K --> U["STATE.md records what was decided and what to read next"]
-  U --> C{"Exit checklist met?"}
-  C -->|"no"| M
-  C -->|"yes"| Q["Gate: Go, Narrow, Back, Stop or Pause"]
+flowchart LR
+  R["`**Read state**
+  The router reads STATE.md.`"] --> M["`**Offer a menu**
+  It lists the stage's skills.`"]
+  M --> P["`**User picks**
+  Nothing runs without a choice.`"]
+  P --> K["`**Run the skill**
+  The skill writes its artifact.`"]
+  K --> U["`**Record**
+  STATE.md logs the decision.`"]
+  U --> C{"`**Checklist met?**`"}
+  C -->|"No."| M
+  C -->|"Yes."| Q["`**Gate**
+  Go, Narrow, Back, Stop or Pause.`"]
 ```
 
 A few rules hold the whole thing together.
@@ -64,11 +76,17 @@ The factory went through the same discipline it enforces. I reviewed six open so
 
 ```mermaid
 flowchart LR
-  W["Write my own PM workflow<br/>as the yardstick"] --> R["Review 6 skill collections<br/>against it"]
-  R --> K["Keep, rework or drop<br/>each skill"]
-  K --> A["Audit every prompt<br/>for clarity and length"]
-  A --> T["Run a real project<br/>end to end"]
-  T --> L["Turn failures into lessons<br/>and skill changes"]
+  W["`**Yardstick**
+  Write my own PM workflow first.`"] --> R["`**Review**
+  Compare 6 skill collections against it.`"]
+  R --> K["`**Curate**
+  Keep, rework or drop each skill.`"]
+  K --> A["`**Audit**
+  Check every prompt for clarity and length.`"]
+  A --> T["`**Test**
+  Run a real project end to end.`"]
+  T --> L["`**Ratchet**
+  Turn failures into lessons and skill changes.`"]
   L -.-> K
 ```
 
