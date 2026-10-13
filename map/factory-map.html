@@ -1,0 +1,259 @@
+<title>PM Factory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Schibsted+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an assembly line. Six stations left to right, side tracks below, a detail drawer for the selected station. */
+:root{
+  --bg:#f3f4f6; --panel:#ffffff; --ink:#15191f; --muted:#5b6472; --line:#d5d9e0;
+  --accent:#a85800; --accent-ink:#ffffff; --skip:#c9ced6; --good:#1f7a4d; --soft:#fff3e0;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Schibsted Grotesk",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151a; --panel:#1b2028; --ink:#e8ebf0; --muted:#9aa3b2; --line:#2c333e;
+  --accent:#f0a030; --accent-ink:#1a1206; --skip:#3a414c; --good:#4cc38a; --soft:#2a2112; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151a; --panel:#1b2028; --ink:#e8ebf0; --muted:#9aa3b2; --line:#2c333e;
+  --accent:#f0a030; --accent-ink:#1a1206; --skip:#3a414c; --good:#4cc38a; --soft:#2a2112; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:8px}
+h1{font:800 clamp(34px,6vw,58px)/1 var(--display);letter-spacing:.01em;margin:0;text-wrap:balance}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.label{font:500 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.modes{display:flex;flex-wrap:wrap;gap:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mode{border:1px solid var(--line);background:var(--panel);padding:8px 14px;border-radius:999px;font-weight:500}
+.mode[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tour-btn{border:1px solid var(--accent);background:transparent;color:var(--accent);padding:8px 14px;border-radius:6px;font-weight:700}
+.modehint{margin:0;color:var(--muted);min-height:1.5em}
+.line{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;position:relative}
+.line::before{content:"";position:absolute;left:4%;right:4%;top:38px;height:4px;background:repeating-linear-gradient(90deg,var(--line) 0 14px,transparent 14px 22px);z-index:0}
+.st{position:relative;z-index:1;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 12px 12px;text-align:left;display:grid;gap:6px;min-width:0;transition:opacity .2s,border-color .2s}
+.st .num{font:800 30px/1 var(--display);color:var(--accent)}
+.st .nm{font:800 20px/1.05 var(--display);letter-spacing:.02em}
+.st .q{font-size:12.5px;color:var(--muted)}
+.st .cnt{font:500 11px var(--mono);color:var(--muted)}
+.st.skip{opacity:.38}
+.st.skip .num{color:var(--skip)}
+.st.start{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.st[aria-expanded="true"]{background:var(--soft);border-color:var(--accent)}
+.badge{justify-self:start;font:500 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;padding:4px 6px;border-radius:4px;background:var(--accent);color:var(--accent-ink)}
+.side{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.side .st{border-style:dashed}
+.drawer{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:18px}
+.drawer h2{font:800 32px/1 var(--display);margin:0}
+.dhead{display:grid;gap:6px}
+.cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
+.skills{display:grid;gap:8px;counter-reset:s}
+.sk{border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.sk>button{width:100%;display:flex;gap:10px;align-items:baseline;background:none;border:0;padding:12px 14px;text-align:left}
+.sk>button::before{counter-increment:s;content:counter(s);font:500 12px var(--mono);color:var(--accent);min-width:1.4em}
+.sk .t{font-weight:700}
+.sk .m{margin-left:auto;font:500 11px var(--mono);color:var(--muted);white-space:nowrap}
+.sk .d{padding:0 14px 14px 38px;display:grid;gap:8px;font-size:14px}
+.sk .d p{margin:0}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);font-size:12px;overflow-wrap:anywhere}
+.chip{display:inline-block;font:500 11px var(--mono);border:1px solid var(--line);border-radius:4px;padding:2px 6px;margin:2px 4px 2px 0}
+.chip.na{opacity:.35;text-decoration:line-through}
+.box{border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:8px;align-content:start}
+.box h3{margin:0;font:800 18px var(--display);letter-spacing:.03em}
+.box ul,.box ol{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.gate{border-color:var(--accent)}
+.decisions{display:flex;flex-wrap:wrap;gap:6px}
+.dec{font:500 12px var(--mono);padding:3px 8px;border-radius:4px;background:var(--soft);border:1px solid var(--accent)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.flow b{color:var(--ink);font-weight:500;border:1px solid var(--line);background:var(--panel);padding:4px 8px;border-radius:4px}
+.tour{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 32px));background:var(--ink);color:var(--bg);border-radius:10px;padding:16px 18px;display:grid;gap:10px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.tour p{margin:0}
+.tour .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tour button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;padding:7px 14px;font-weight:700}
+.tour .ghost{background:transparent;color:var(--bg);opacity:.7}
+.hl{outline:3px solid var(--accent);outline-offset:4px;border-radius:8px}
+footer{color:var(--muted);font-size:13px}
+@media (max-width:860px){
+  .line{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .line::before{display:none}
+  .cols{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="label">A PM operating system on Claude Code</span>
+    <h1>PM Factory</h1>
+    <p class="lede">Six stages take an idea from "is this worth doing?" to "did it move the metric?". Pick your situation and the factory shows where to start. Open a stage to see its skills, what each one reads and writes, and the gate that decides when you move on.</p>
+  </header>
+
+  <section class="bar" aria-label="Situation">
+    <div style="display:grid;gap:8px">
+      <span class="label">1 · What's the situation?</span>
+      <div class="modes" id="modes"></div>
+    </div>
+    <button class="tour-btn" id="tourBtn">Take the 30-second tour</button>
+  </section>
+  <p class="modehint" id="modehint"></p>
+
+  <section aria-label="Stages" style="display:grid;gap:10px">
+    <span class="label">2 · Open a stage</span>
+    <div class="line" id="line"></div>
+    <div class="side" id="side"></div>
+  </section>
+
+  <section class="drawer" id="drawer" aria-live="polite"></section>
+
+  <section class="box" aria-label="How a stage ends">
+    <h3>How you move between stages</h3>
+    <div class="flow"><b>Menu of steps</b>→<b>Run steps</b>→<b>Exit checklist met</b>→<b>Gate: evidence</b>→<b>You decide</b>→<b>Next menu</b></div>
+    <p style="margin:0;font-size:14px;color:var(--muted)">Stages hand off through files. Each project has one <code>STATE.md</code> that names the exact files the next stage reads, so nothing scans the whole repo. You can skip ahead any time. The skip and its reason are logged.</p>
+  </section>
+
+  <footer>Skills are original and written from first principles. Inspirations are listed in CREDITS.md.</footer>
+</div>
+
+<div class="tour" id="tour" hidden>
+  <p id="tourText"></p>
+  <div class="row"><span class="label" id="tourStep" style="color:inherit;opacity:.7"></span>
+    <span><button class="ghost" id="tourSkip">Close</button> <button id="tourNext">Next</button></span></div>
+</div>
+
+<script>
+const MODES={
+  new:{label:"New product",hint:"0 to 1. Start at Frame and run every stage.",path:[0,1,2,3,4,5],start:0},
+  revamp:{label:"Revamp",hint:"Rework an existing product. Start at Discover with the data you already have.",path:[1,2,3,4,5],start:1},
+  feature:{label:"New feature",hint:"Add to an existing product. A quick Discover check, then Define.",path:[1,2,3,4,5],start:2},
+  fix:{label:"Fix or iterate",hint:"Something broke or a metric dropped. Start at Learn, then loop back to Define and Build. Design only if the UI changes.",path:[5,2,4],start:5}
+};
+const S=(n,menu,model,modes,reads,writes,what,extras=[])=>({n,menu,model,modes,reads,writes,what,extras});
+const ALL=["new","revamp","feature","fix"];
+const STAGES=[
+ {name:"Frame",q:"Is this worth doing, and for whom?",dir:"00-frame",
+  skills:[
+   S("interview-me","Pin down what I actually want","opus",["new"],["STATE.md","learnings/"],["00-frame/intent.md"],"One question at a time until the real goal and constraints are clear."),
+   S("idea-refine","Sharpen the idea","opus",["new"],["00-frame/intent.md"],["00-frame/brief.md"],"Widens then narrows options. Ends with a problem, a user, a success metric and one vision line.",["Value proposition lens"]),
+   S("landscape-and-sizing","Size the market, scan competitors","sonnet",["new"],["00-frame/brief.md"],["00-frame/landscape.md"],"Market size and competitors with a source and date on every number.",["Lean canvas or business model","SWOT for an exec audience"])],
+  exit:{new:["brief.md","landscape.md"]},gate:["Is the problem real and painful for a specific user?","Is there a measurable success metric?","Why now, and why us?"],decide:["Go","Narrow","Stop"]},
+ {name:"Discover",q:"What's true about users and the market?",dir:"01-discover",
+  skills:[
+   S("interview","Script and summarize interviews","sonnet",["new","revamp"],["00-frame/brief.md"],["01-discover/interviews/*.md"],"Mom Test script, then structured notes from each transcript."),
+   S("feedback-mining","Mine public or existing feedback","sonnet",["new","revamp","feature"],["STATE.md","feedback sources"],["01-discover/insights.md"],"Clusters real feedback into themes with sentiment and a quote per theme."),
+   S("segments-personas","Find segments and personas","sonnet",["new","revamp"],["01-discover/insights.md"],["01-discover/segments.md"],"Groups users by job to be done. Personas come only from evidence.",["Customer journey map"]),
+   S("opportunity-solution-tree","Map outcome to opportunities","opus",["new","revamp"],["01-discover/insights.md","01-discover/segments.md"],["01-discover/ost.md"],"Links the success metric to user problems and candidate solutions."),
+   S("assumptions-to-experiment","Test the riskiest bet","opus",ALL.slice(0,3),["01-discover/ost.md"],["01-discover/assumptions.md"],"Lists risky assumptions, ranks impact x risk, picks the cheapest test. New and existing paths.")],
+  exit:{new:["insights.md","ost.md","assumptions.md"],revamp:["insights.md","assumptions.md"],feature:["assumptions.md"]},gate:["Are insights backed by sources?","Is the riskiest assumption tested or knowingly accepted?","Is the target opportunity chosen?"],decide:["Go","Narrow","Back","Stop"]},
+ {name:"Define",q:"What exactly are we building?",dir:"02-define",
+  skills:[
+   S("define-intake","Check inputs and fill gaps","sonnet",ALL,["STATE.md"],["02-define/intake.md"],"Reads what exists for this mode and asks only for what is missing."),
+   S("spec","Write the spec","opus",ALL,["02-define/intake.md"],["02-define/spec.md"],"PM layer plus machine layer: Given/When/Then criteria, Always/Ask first/Never rules, eval seeds. Generic loop add-on for scheduled products.",["OKRs in success metrics","Loop add-on"]),
+   S("red-team","Attack the spec","opus",["new","revamp","feature"],["02-define/spec.md"],["02-define/redteam.md"],"Steelman, then attack load-bearing assumptions. Sorts risks into tigers, paper tigers and elephants. Includes AI risks."),
+   S("tasks","Slice into tasks","sonnet",ALL,["02-define/spec.md"],["02-define/tasks.md"],"Thin end-to-end slices with checkpoints and the exact paths Build may touch.")],
+  exit:{new:["spec.md","redteam.md","tasks.md"],revamp:["spec.md","redteam.md","tasks.md"],feature:["spec.md","redteam.md","tasks.md"],fix:["spec.md (repro, expected, regression test)","tasks.md"]},gate:["Can every criterion be tested?","Are the tigers handled or accepted?","Is scope the smallest version that proves value?"],decide:["Go","Narrow","Back","Stop"]},
+ {name:"Design",q:"What does it look and feel like?",dir:"03-design",
+  skills:[
+   S("design-brief","Set the look and feel","opus",["new","revamp","feature"],["02-define/spec.md"],["03-design/brief.md"],"Users, tone, references and design tokens."),
+   S("prototype","Build a clickable prototype","sonnet",["new","revamp","feature"],["03-design/brief.md","02-define/spec.md"],["prototype"],"A working UI for the main flow, built from the spec."),
+   S("design-critique","Critique with two reviewers","opus",["new","revamp","feature"],["prototype","03-design/brief.md"],["03-design/critique.md"],"Two isolated reviewers score against about 25 heuristics plus AI-product checks.",["Run impeccable audit if installed"]),
+   S("design-polish","Polish states and edges","sonnet",["new","revamp","feature"],["03-design/critique.md"],["prototype"],"Empty, error and loading states, mobile and accessibility.",["Bolder, quieter or add motion"])],
+  exit:{new:["brief.md","prototype","critique.md"],revamp:["brief.md","prototype","critique.md"],feature:["prototype","critique.md"]},gate:["Can a new user finish the main task alone?","Are empty, error and loading states handled?","Did both reviewers clear it?"],decide:["Go","Narrow","Back"]},
+ {name:"Build",q:"Does it work, and match the spec?",dir:"04-build",
+  skills:[
+   S("build-setup","Set rules and quality bar","sonnet",ALL,["02-define/spec.md","02-define/tasks.md"],["CLAUDE.md","04-build/constraints.md"],"Short project rules, checks to run and commands to block."),
+   S("test-plan","Plan tests and evals","opus",ALL,["02-define/spec.md"],["04-build/test-plan.md","evals/"],"Turns criteria and eval seeds into tests, goldens, slices and a holdout set."),
+   S("build-slice","Build one slice","sonnet",ALL,["02-define/tasks.md","04-build/test-plan.md"],["code","PR contract"],"One thin slice, tests first, inside allowed paths. Ends with a PR contract."),
+   S("debug","Find the root cause","opus",ALL,["failing output"],["fix","lessons.md"],"Reproduce, isolate, fix, add a guard. The lesson goes to lessons.md."),
+   S("review-pr","Review by risk","opus",ALL,["PR contract","diff"],["review notes"],"Second reviewer on a different model. Full human review only for high-risk slices."),
+   S("spec-check","Prove it matches the spec","opus",ALL,["02-define/spec.md","app"],["04-build/spec-check.md"],"Probes every criterion and every Always/Ask/Never rule. Guardrails live here."),
+   S("ship-packet","Deploy with evidence","sonnet",ALL,["04-build/*"],["04-build/ship-packet.md","deployed URL"],"Deploys, then bundles test, eval and review evidence.")],
+  exit:{new:["tests and evals pass","spec-check.md","deployed URL","ship-packet.md"]},gate:["Did I see it work myself?","Do eval scores meet the spec's bar?","Were high-risk slices reviewed by a human?"],decide:["Ship","Add guardrail","Back","Block"]},
+ {name:"Launch & Learn",q:"Did it move the metric?",dir:"05-launch",
+  skills:[
+   S("launch-plan","Plan the launch","sonnet",["new","revamp","feature"],["00-frame/brief.md","04-build/ship-packet.md"],["05-launch/plan.md"],"Positioning, message, free channels, release notes.",["Product name ideas","Pricing check"]),
+   S("measure-setup","Set up metrics and live evals","sonnet",["new","revamp","feature"],["02-define/spec.md"],["05-launch/metrics.md"],"North Star metric, inputs, dashboard and production evals."),
+   S("learn-readout","Read the results","opus",ALL,["05-launch/metrics.md","live data"],["05-launch/readout.md"],"Statistical when traffic allows, otherwise labeled directional. Failures become new eval cases. In fix mode it writes the fix brief for Define.",["SQL query helper"]),
+   S("retro","Retro and ratchet","sonnet",["new","revamp","feature"],["05-launch/readout.md"],["05-launch/retro.md","lessons.md","learnings/"],"What to keep and change. Proven lessons get promoted to learnings/, which Frame and Discover read first.")],
+  exit:{new:["plan.md","metrics.md","readout.md","retro.md"],fix:["readout.md (hands a fix spec to Define)"]},gate:["Did the metric move, and is the result statistical or directional?","Which failures became eval cases?","Which lessons get promoted?"],decide:["Iterate","Scale","Stop"]}
+];
+const SIDE=[
+ {name:"Communicate",q:"Any stage. Keep people aligned.",skills:[
+   S("stakeholder-update","Write a stakeholder update","sonnet",ALL,["STATE.md"],["comms/update.md"],"Map who cares, then a tailored update.",["Summarize a meeting"]),
+   S("decision-memo","Write a decision memo","opus",ALL,["STATE.md","stage outputs"],["comms/decisions/*.md"],"Context, options, decision, and what would change our mind."),
+   S("roadmap","Build an outcome roadmap","sonnet",ALL,["STATE.md"],["comms/roadmap.md"],"Outcomes over features, with now, next and later.")]},
+];
+
+let mode="new", open=0;
+const $=id=>document.getElementById(id);
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+
+function renderModes(){
+  $("modes").innerHTML=Object.entries(MODES).map(([k,m])=>`<button class="mode" id="mode-${k}" aria-pressed="${k===mode}" data-m="${k}">${m.label}</button>`).join("");
+  $("modes").querySelectorAll("button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;open=MODES[mode].start;render()});
+  $("modehint").textContent=MODES[mode].hint;
+}
+function card(st,i,side){
+  const m=MODES[mode], skip=!side && !m.path.includes(i), start=!side && m.start===i;
+  const id=side?`side${i}`:`st${i}`;
+  const active=side?open===`s${i}`:open===i;
+  return `<button class="st ${skip?"skip":""} ${start?"start":""}" id="${id}" aria-expanded="${active}" data-k="${side?"s"+i:i}">
+    ${start?'<span class="badge">Start here</span>':""}
+    ${side?"":`<span class="num">${i}</span>`}
+    <span class="nm">${st.name}</span><span class="q">${st.q}</span>
+    <span class="cnt">${st.skills.length} skills${skip?" · skipped in this mode":""}</span></button>`;
+}
+function renderLine(){
+  $("line").innerHTML=STAGES.map((s,i)=>card(s,i,false)).join("");
+  $("side").innerHTML=SIDE.map((s,i)=>card(s,i,true)).join("");
+  document.querySelectorAll(".st").forEach(b=>b.onclick=()=>{const k=b.dataset.k;open=k.startsWith("s")?k:+k;render();$("drawer").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"start"})});
+}
+function renderDrawer(){
+  const side=typeof open==="string", st=side?SIDE[+open.slice(1)]:STAGES[open];
+  const skills=st.skills.map((k,j)=>{
+    const on=k.modes.includes(mode);
+    return `<div class="sk"><button aria-expanded="false" id="sk-${j}"><span class="t">${esc(k.menu)}</span><span class="m">${k.n} · ${k.model}</span></button>
+      <div class="d" hidden><p>${esc(k.what)}</p>
+      <dl class="kv"><dt>Reads</dt><dd>${k.reads.map(esc).join(", ")}</dd><dt>Writes</dt><dd>${k.writes.map(esc).join(", ")}</dd></dl>
+      <div>${ALL.map(x=>`<span class="chip ${k.modes.includes(x)?"":"na"}">${MODES[x].label}</span>`).join("")}</div>
+      ${k.extras.length?`<p style="color:var(--muted);font-size:13px">Extras the menu may offer: ${k.extras.map(esc).join(" · ")}</p>`:""}
+      ${on?"":`<p style="color:var(--muted);font-size:13px">Not used in ${MODES[mode].label} mode.</p>`}</div></div>`}).join("");
+  let right="";
+  if(!side){
+    const ex=st.exit[mode]||st.exit.new;
+    const notUsed=!MODES[mode].path.includes(open);
+    right=`<div class="box"><h3>Exit checklist · ${MODES[mode].label}</h3>${notUsed?'<p style="margin:0;color:var(--muted);font-size:14px">This stage is skipped in this mode.</p>':`<ul>${ex.map(e=>`<li><code>${esc(e)}</code></li>`).join("")}</ul>`}</div>
+      <div class="box gate" id="gatebox"><h3>The gate</h3><ol>${st.gate.map(g=>`<li>${esc(g)}</li>`).join("")}</ol><span class="label">You decide</span><div class="decisions">${st.decide.map(d=>`<span class="dec">${d}</span>`).join("")}</div></div>`;
+  } else {
+    right=`<div class="box"><h3>Side track</h3><p style="margin:0;font-size:14px;color:var(--muted)">No gate. Use it at any stage. It reads STATE.md to know where the project is.</p></div>`;
+  }
+  $("drawer").innerHTML=`<div class="dhead"><span class="label">${side?"Side track":"Stage "+open} · ${st.dir?`<code>${st.dir}/</code>`:""}</span><h2>${st.name}</h2><p style="margin:0;color:var(--muted)">${st.q} The router shows these as a numbered menu and recommends one. Open a skill to see what it reads and writes.</p></div>
+    <div class="cols"><div class="skills" id="skills">${skills}</div><div style="display:grid;gap:12px;align-content:start">${right}</div></div>`;
+  $("drawer").querySelectorAll(".sk>button").forEach(b=>b.onclick=()=>{const d=b.nextElementSibling;d.hidden=!d.hidden;b.setAttribute("aria-expanded",!d.hidden)});
+}
+function render(){renderModes();renderLine();renderDrawer()}
+render();
+const first=document.querySelector("#sk-0");if(first)first.click();
+
+const TOUR=[
+ ["modes","Start by telling the factory your situation. A brand-new idea, a revamp, a new feature or a fix each start at a different stage."],
+ ["line","These are the six stages. The one marked Start here is where your situation begins. Faded stages are skipped."],
+ ["skills","Inside each stage are skills. The router offers them as a menu and recommends one. Each skill names the exact files it reads and writes."],
+ ["gatebox","A stage ends at a gate. The factory shows the evidence and you make the call: go, narrow, back or stop."]
+];
+let ti=0;
+function showTour(){
+  document.querySelectorAll(".hl").forEach(e=>e.classList.remove("hl"));
+  if(ti>=TOUR.length){$("tour").hidden=true;return}
+  const [id,text]=TOUR[ti];const el=$(id);
+  if(el){el.classList.add("hl");el.scrollIntoView({block:"center",behavior:"auto"})}
+  $("tourText").textContent=text;$("tourStep").textContent=`${ti+1} of ${TOUR.length}`;
+  $("tourNext").textContent=ti===TOUR.length-1?"Done":"Next";$("tour").hidden=false;
+}
+$("tourBtn").onclick=()=>{mode="new";open=0;render();ti=0;showTour()};
+$("tourNext").onclick=()=>{ti++;showTour()};
+$("tourSkip").onclick=()=>{ti=TOUR.length;showTour()};
+</script>

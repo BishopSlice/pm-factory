@@ -1,0 +1,50 @@
+{
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": false,
+    "figma@claude-plugins-official": false,
+    "pm-ai-shipping@pm-skills": false,
+    "pm-data-analytics@pm-skills": false,
+    "pm-execution@pm-skills": false,
+    "pm-go-to-market@pm-skills": false,
+    "pm-market-research@pm-skills": false,
+    "pm-marketing-growth@pm-skills": false,
+    "pm-product-discovery@pm-skills": false,
+    "pm-product-strategy@pm-skills": false,
+    "pm-toolkit@pm-skills": false
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/activity-log.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/activity-log.py\""
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(rm -rf:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+# Private: personal context, sources, research and projects (adk-voc is its own repo)
+CLAUDE.local.md
+frameworks/
+JDs/
+notes/
+prep/
+projects/
+.factory/
+.impeccable/
+**/activity.log
+.claude/settings.local.json
+.DS_Store
+__pycache__/
